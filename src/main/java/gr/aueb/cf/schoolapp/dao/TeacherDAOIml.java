@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDAOIml implements ITeacherDAO {
@@ -93,7 +94,8 @@ public class TeacherDAOIml implements ITeacherDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                teacher = new Teacher(rs.getInt("id"),
+                teacher = new Teacher(
+                        rs.getInt("id"),
                         rs.getString("firstname"),
                         rs.getString("lastname")
                 );
@@ -109,6 +111,29 @@ public class TeacherDAOIml implements ITeacherDAO {
 
     @Override
     public List<Teacher> getByLastname(String lastname) throws TeacherDAOException {
-        return List.of();
+        List<Teacher> teachers = new ArrayList<>();
+        ResultSet rs;
+        String sql = "SELECT * FROM teachers WHERE lastname LIKE ?";
+
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, lastname + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Teacher teacher = new Teacher(
+                        rs.getInt("id"),
+                        rs.getString("firstname"),
+                        rs.getString("lastname")
+                );
+                teachers.add(teacher);
+            }
+            return teachers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // logging
+            throw new TeacherDAOException("SQL error in get by lastname with lastname: " + lastname);
+        }
     }
 }
