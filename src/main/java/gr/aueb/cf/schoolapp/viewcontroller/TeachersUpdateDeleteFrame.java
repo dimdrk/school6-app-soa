@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -16,6 +19,13 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 import gr.aueb.cf.schoolapp.Main;
+import gr.aueb.cf.schoolapp.dao.ITeacherDAO;
+import gr.aueb.cf.schoolapp.dao.TeacherDAOIml;
+import gr.aueb.cf.schoolapp.dao.exceptions.TeacherDAOException;
+import gr.aueb.cf.schoolapp.dto.TeacherReadOnlyDTO;
+import gr.aueb.cf.schoolapp.model.Teacher;
+import gr.aueb.cf.schoolapp.service.ITeacherService;
+import gr.aueb.cf.schoolapp.service.TeacherServiceImp;
 import gr.aueb.cf.schoolapp.service.util.DBUtil;
 
 import javax.swing.JLabel;
@@ -37,6 +47,10 @@ import java.awt.event.FocusEvent;
 import java.awt.Toolkit;
 
 public class TeachersUpdateDeleteFrame extends JFrame {
+
+	// Wiring
+	private final ITeacherDAO teacherDAO = new TeacherDAOIml();
+	private final ITeacherService teacherService = new TeacherServiceImp(teacherDAO);
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -281,32 +295,33 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 	private void buildTable() {
 		
 		Vector<String> vector;
+		List<TeacherReadOnlyDTO> readOnlyDTOS = new ArrayList<>();
+		TeacherReadOnlyDTO readOnlyDTO;
 		
-		String sql = "SELECT id, firstname, lastname FROM teachers WHERE lastname LIKE ?";
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement ps = conn.prepareStatement(sql);) {
+		try {
+			String searchStr = lastnameSearchText.getText().trim();
 
+			List<Teacher> teachers = teacherService.getTeachersByLastname(searchStr);
 
-			ps.setString(1,  lastnameSearchText.getText().trim() + "%");
-			
-			ResultSet rs = ps.executeQuery();
-			
-			// Clear model -> clear table - MVVM
+			for (Teacher teacher : teachers) {
+				readOnlyDTO = mapToReadOnlyDTO(teacher);
+				readOnlyDTOS.add(readOnlyDTO);
+			}
+
 			for (int i = model.getRowCount() - 1; i >= 0; i--) {
 				model.removeRow(i);
 			}
-			
-			while (rs.next()) {
+
+			for (TeacherReadOnlyDTO teacherReadOnlyDTO : readOnlyDTOS) {
 				vector = new Vector<>(3);
-				vector.add(rs.getString("id"));
-				vector.add(rs.getString("firstname"));
-				vector.add(rs.getString("lastname"));
-				
+				vector.add(String.valueOf(teacherReadOnlyDTO.getId()));
+				vector.add(teacherReadOnlyDTO.getFirstname());
+				vector.add(teacherReadOnlyDTO.getLastname());
 				model.addRow(vector);
-			}			
-		} catch (SQLException e) {
-			// e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Insertion error", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (TeacherDAOException ex) {
+			// ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -328,5 +343,9 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 		if (!inputLastname.equals("")) {
 			errorLastname.setText("");
 		};
+	}
+
+	private TeacherReadOnlyDTO mapToReadOnlyDTO(Teacher teacher) {
+		return new TeacherReadOnlyDTO(teacher.getId(), teacher.getFirstname(), teacher.getLastname());
 	}
 }
