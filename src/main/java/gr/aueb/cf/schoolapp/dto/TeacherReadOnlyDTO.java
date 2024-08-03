@@ -10,7 +10,7 @@ public class TeacherReadOnlyDTO extends BaseDTO {
         this.id = id;
     }
 
-    public TeacherReadOnlyDTO(String firstname, String lastname, Integer id) {
+    public TeacherReadOnlyDTO(Integer id, String firstname, String lastname) {
         super(firstname, lastname);
         this.id = id;
     }
