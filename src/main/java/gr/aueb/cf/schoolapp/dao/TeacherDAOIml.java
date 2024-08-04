@@ -39,7 +39,7 @@ public class TeacherDAOIml implements ITeacherDAO {
 
     @Override
     public Teacher update(Teacher teacher) throws TeacherDAOException {
-        String sql = "UPDATE teachers SET firstname = ?, lastname = ? WHERE id = ?)";
+        String sql = "UPDATE teachers SET firstname = ?, lastname = ? WHERE id = ?";
 
         try (Connection connection = DBUtil.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -53,7 +53,7 @@ public class TeacherDAOIml implements ITeacherDAO {
             ps.setString(2, lastname);
             ps.setInt(3, id);
 
-            int n = ps.executeUpdate();
+            ps.executeUpdate();
             // logging
             return teacher; //TBD
         } catch (SQLException e) {

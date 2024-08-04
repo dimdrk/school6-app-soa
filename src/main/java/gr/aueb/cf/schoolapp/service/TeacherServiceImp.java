@@ -3,7 +3,6 @@ package gr.aueb.cf.schoolapp.service;
 import gr.aueb.cf.schoolapp.dao.ITeacherDAO;
 import gr.aueb.cf.schoolapp.dao.exceptions.TeacherDAOException;
 import gr.aueb.cf.schoolapp.dto.TeacherInsertDTO;
-import gr.aueb.cf.schoolapp.dto.TeacherReadOnlyDTO;
 import gr.aueb.cf.schoolapp.dto.TeacherUpdateDTO;
 import gr.aueb.cf.schoolapp.model.Teacher;
 import gr.aueb.cf.schoolapp.service.exceptions.TeacherNotFoundException;
@@ -28,7 +27,7 @@ public class TeacherServiceImp implements ITeacherService {
             return teacherDAO.insert(teacher);
 
         } catch (TeacherDAOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             // rollback
             throw e;
         }
@@ -48,7 +47,8 @@ public class TeacherServiceImp implements ITeacherService {
 
             return teacherDAO.update(teacher);
         } catch (TeacherDAOException | TeacherNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            // logging
             // rollback
             throw e;
         }
@@ -64,7 +64,7 @@ public class TeacherServiceImp implements ITeacherService {
 
             teacherDAO.delete(id);
         } catch (TeacherDAOException | TeacherNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             // rollback
             throw e;
         }

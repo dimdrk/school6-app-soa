@@ -66,6 +66,7 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 	private JTextField lastnameText;
 	private JLabel errorFirstname;
 	private JLabel errorLastname;
+	private JButton updateBtn;
 
 	public TeachersUpdateDeleteFrame() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Thread.currentThread().getContextClassLoader().getResource("eduv2.png")));
@@ -73,6 +74,7 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
+				lastnameSearchText.setText("");
 				buildTable();	// initial rendering
 				idText.setText("");
 				firstnameText.setText("");
@@ -80,6 +82,7 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 			}
 			@Override
 			public void windowActivated(WindowEvent e) {
+				lastnameSearchText.setText("");
 				buildTable();	// refresh after update / delete
 				idText.setText("");
 				firstnameText.setText("");
@@ -205,12 +208,11 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 		errorFirstname.setBounds(92, 75, 170, 19);
 		panel.add(errorFirstname);
 		
-		JButton updateBtn = new JButton("Ενημέρωση");
+		updateBtn = new JButton("Ενημέρωση");
 		updateBtn.setForeground(new Color(0, 0, 128));
 		updateBtn.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		updateBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				Map<String, String> errors;
 				String firstnameMessage;
 				String lastnameMessage;
@@ -254,7 +256,7 @@ public class TeachersUpdateDeleteFrame extends JFrame {
 				} catch (TeacherDAOException | TeacherNotFoundException e1) {
 					// e1.printStackTrace();
 					// On failure, show message
-					JOptionPane.showMessageDialog(null, "Insertion error", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
