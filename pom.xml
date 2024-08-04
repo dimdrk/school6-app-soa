@@ -80,5 +80,16 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <mainClass>gr.aueb.cf.schoolapp.Main</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
