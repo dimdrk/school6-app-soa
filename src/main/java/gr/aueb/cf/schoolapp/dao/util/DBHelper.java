@@ -19,7 +19,7 @@ public class DBHelper {
 
     }
 
-    public static void eraseData() {
+    public static void eraseData() throws SQLException {
         String sqlFKOff = "SET @@foreign_key_checks = 0";
         String sqlFKOn = "SET @@foreign_key_checks = 0";
         String sqlSelect = "SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = 'school6db'";
@@ -41,6 +41,7 @@ public class DBHelper {
             connection.prepareStatement(sqlFKOn).executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
