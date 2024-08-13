@@ -77,12 +77,12 @@ public class TeacherServiceImp implements ITeacherService {
 
         try {
             teacher = teacherDAO.getById(id);
-            if (teacherDAO.getById(id) == null) {
+            if (teacher == null) {
                 throw new TeacherNotFoundException("Teacher with id: " + id + " not found.");
             }
             return teacher;
         } catch (TeacherDAOException | TeacherNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             // rollback
             throw e;
         }
@@ -96,7 +96,7 @@ public class TeacherServiceImp implements ITeacherService {
             teachers = teacherDAO.getByLastname(lastname);
             return teachers;
         } catch (TeacherDAOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw e;
         }
     }
